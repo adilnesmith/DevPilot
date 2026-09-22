@@ -1,0 +1,166 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User & Authentication
+model User {
+  id            String    @id @default(cuid())
+  githubId      String    @unique
+  username      String
+  email         String?
+  avatarUrl     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessions      Session[]
+  repositories  Repository[]
+  conversations Conversation[]
+  preferences   UserPreferences?
+
+  @@map("users")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  token        String   @unique
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model UserPreferences {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  theme           String   @default("light")
+  language        String   @default("en")
+  notifications   Boolean  @default(true)
+  fontSize        Int      @default(14)
+
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_preferences")
+}
+
+// Repositories
+model Repository {
+  id              String   @id @default(cuid())
+  userId          String
+  githubId        Int
+  name            String
+  fullName        String
+  description     String?
+  language        String?
+  url             String
+  isPrivate       Boolean  @default(false)
+  lastSyncedAt    DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  files           RepositoryFile[]
+  commits         RepositoryCommit[]
+  pullRequests    PullRequest[]
+
+  @@map("repositories")
+}
+
+model RepositoryFile {
+  id              String   @id @default(cuid())
+  repositoryId    String
+  path            String
+  content         String?
+  language        String?
+  size            Int?
+  lastModifiedAt  DateTime @default(now())
+  createdAt       DateTime @default(now())
+
+  repository      Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+
+  @@map("repository_files")
+}
+
+model RepositoryCommit {
+  id              String   @id @default(cuid())
+  repositoryId    String
+  sha             String
+  message         String
+  author          String?
+  authorEmail     String?
+  committedAt     DateTime
+  createdAt       DateTime @default(now())
+
+  repository      Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+
+  @@map("repository_commits")
+}
+
+model PullRequest {
+  id              String   @id @default(cuid())
+  repositoryId    String
+  githubId        Int
+  title           String
+  body            String?
+  state           String
+  author          String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  repository      Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+
+  @@map("pull_requests")
+}
+
+// Conversations
+model Conversation {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages    Message[]
+
+  @@map("conversations")
+}
+
+model Message {
+  id              String   @id @default(cuid())
+  conversationId  String
+  role            String
+  content         String
+  metadata        Json?
+  createdAt       DateTime @default(now())
+
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@map("messages")
+}
+
+// AI & Agents
+model AgentExecution {
+  id          String   @id @default(cuid())
+  agentType   String
+  input       Json
+  output      Json?
+  status      String
+  error       String?
+  startedAt   DateTime @default(now())
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+
+  @@map("agent_executions")
+}

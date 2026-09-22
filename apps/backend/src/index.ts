@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -21,10 +21,9 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// API routes will be added here
-// app.use('/api/auth', authRoutes);
-// app.use('/api/chat', chatRoutes);
-// app.use('/api/repositories', repositoryRoutes);
+// API routes
+import authRoutes from './api/routes/auth/login';
+app.use('/api/auth', authRoutes);
 
 // Error handling
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
