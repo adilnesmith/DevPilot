@@ -1,6 +1,25 @@
 # DevPilot - AI Engineering Assistant Platform
 
-## 📚 Documentation Navigation
+## � Quick Start
+
+**Current Status**: Phase 1, Week 1 COMPLETED ✅
+- Frontend running: http://localhost:3000
+- Backend running: http://localhost:3001
+- Infrastructure setup complete
+
+**Quick Setup**:
+```bash
+# Install dependencies
+pnpm install
+
+# Start development servers
+pnpm dev
+
+# Start databases (optional for Week 1)
+docker-compose up -d
+```
+
+**📖 For detailed setup and current status**: See [SETUP.md](SETUP.md) or [CURRENT_STATE.md](CURRENT_STATE.md)
 
 **🤖 AI Agents**: Start with the [Documentation Index](docs/INDEX.md) for optimized navigation
 
@@ -8,7 +27,7 @@
 
 This document serves as the main navigation hub for DevPilot documentation. Each section is organized to help you (both humans and AI agents) find the right information quickly.
 
-### 🚀 Quick Start
+### � Documentation Navigation
 - **[Project Overview](docs/overview/README.md)** - What is DevPilot and why it matters
 - **[Getting Started](docs/overview/README.md#getting-started)** - Installation and first steps
 - **[Architecture Overview](docs/technical/ARCHITECTURE.md)** - High-level system architecture

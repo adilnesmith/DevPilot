@@ -1,0 +1,29 @@
+{
+  "name": "devpilot",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI Engineering Assistant Platform",
+  "scripts": {
+    "dev": "pnpm --filter \"./apps/**\" dev",
+    "build": "pnpm --filter \"./apps/**\" build",
+    "test": "pnpm --filter \"./apps/**\" --filter \"./packages/**\" test",
+    "lint": "pnpm --filter \"./apps/**\" --filter \"./packages/**\" lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "clean": "pnpm --filter \"./apps/**\" --filter \"./packages/**\" clean",
+    "typecheck": "pnpm --filter \"./apps/**\" --filter \"./packages/**\" typecheck"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "prettier": "^3.1.0",
+    "typescript": "^5.3.0",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.0"
+}
