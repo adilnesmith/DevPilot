@@ -8,6 +8,13 @@ const gitHubOAuth = new GitHubOAuth();
 const authService = new AuthService();
 
 router.get('/github', (req: Request, res: Response) => {
+  if (!gitHubOAuth.isConfigured()) {
+    return res.status(500).json({ 
+      error: 'GitHub OAuth not configured',
+      message: 'Please set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET in environment variables'
+    });
+  }
+
   const redirectUri = `${process.env.FRONTEND_URL}/auth/callback`;
   const authUrl = gitHubOAuth.getAuthUrl(redirectUri);
   res.json({ authUrl });
@@ -15,6 +22,13 @@ router.get('/github', (req: Request, res: Response) => {
 
 router.post('/github/callback', async (req: Request, res: Response) => {
   try {
+    if (!gitHubOAuth.isConfigured()) {
+      return res.status(500).json({ 
+        error: 'GitHub OAuth not configured',
+        message: 'Please set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET in environment variables'
+      });
+    }
+
     const { code } = req.body;
 
     if (!code) {
@@ -33,6 +47,7 @@ router.post('/github/callback', async (req: Request, res: Response) => {
       username: userInfo.login,
       email: userInfo.email || undefined,
       avatarUrl: userInfo.avatar_url,
+      accessToken: tokenResponse.access_token,
     });
 
     res.json(authResponse);

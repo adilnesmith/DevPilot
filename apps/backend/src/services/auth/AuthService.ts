@@ -6,6 +6,7 @@ export interface LoginInput {
   username: string;
   email?: string;
   avatarUrl?: string;
+  accessToken?: string;
 }
 
 export interface AuthResponse {
@@ -16,11 +17,12 @@ export interface AuthResponse {
     avatarUrl: string | null;
   };
   token: string;
+  accessToken?: string;
 }
 
 export class AuthService {
   async findOrCreateUser(input: LoginInput): Promise<AuthResponse> {
-    const { githubId, username, email, avatarUrl } = input;
+    const { githubId, username, email, avatarUrl, accessToken } = input;
 
     // Check if user exists
     let user = await prisma.user.findUnique({
@@ -72,6 +74,7 @@ export class AuthService {
         avatarUrl: user.avatarUrl,
       },
       token,
+      accessToken,
     };
   }
 

@@ -13,7 +13,10 @@ prisma.$connect()
   })
   .catch((error) => {
     console.error('Failed to connect to database:', error);
-    process.exit(1);
+    // Don't exit in development if database is not available
+    if (process.env.NODE_ENV === 'production') {
+      process.exit(1);
+    }
   });
 
 // Graceful shutdown

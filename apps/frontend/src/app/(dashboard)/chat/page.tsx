@@ -1,10 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../../../lib/auth';
 
 export default function ChatPage() {
   const router = useRouter();
+  const { getUser } = useAuth();
+  const [user, setUser] = useState<{ id: string; username: string; email: string | null; avatarUrl: string | null } | null>(null);
+
+  useEffect(() => {
+    const currentUser = getUser();
+    if (currentUser) {
+      setUser(currentUser);
+    }
+  }, [getUser]);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([
     { role: 'assistant', content: 'Hello! I\'m DevPilot, your AI engineering assistant. How can I help you today?' }
@@ -41,20 +51,30 @@ export default function ChatPage() {
               </button>
               <h1 className="text-xl font-bold text-gray-900">Chat</h1>
             </div>
+            <div className="flex items-center space-x-2">
+              {user?.avatarUrl && (
+                <img
+                  src={user.avatarUrl}
+                  alt={user.username}
+                  className="h-8 w-8 rounded-full"
+                />
+              )}
+              <span className="text-gray-700">{user?.username}</span>
+            </div>
           </div>
         </div>
       </nav>
 
       <main className="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="bg-white shadow rounded-lg h-[calc(100vh-200px)] flex flex-col">
-          <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
             {messages.map((msg, index) => (
               <div
                 key={index}
                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[70%] rounded-lg p-4 ${
+                  className={`max-w-[85%] sm:max-w-[70%] rounded-lg p-3 sm:p-4 ${
                     msg.role === 'user'
                       ? 'bg-gray-900 text-white'
                       : 'bg-gray-100 text-gray-900'
@@ -78,7 +98,7 @@ export default function ChatPage() {
               />
               <button
                 onClick={handleSendMessage}
-                className="px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800"
+                className="px-4 sm:px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors"
               >
                 Send
               </button>

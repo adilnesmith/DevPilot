@@ -22,9 +22,14 @@ export class GitHubOAuth {
     this.clientId = process.env.GITHUB_CLIENT_ID || '';
     this.clientSecret = process.env.GITHUB_CLIENT_SECRET || '';
 
-    if (!this.clientId || !this.clientSecret) {
+    // Only throw error in production, allow missing credentials in development
+    if (process.env.NODE_ENV === 'production' && (!this.clientId || !this.clientSecret)) {
       throw new Error('GitHub OAuth credentials not configured');
     }
+  }
+
+  isConfigured(): boolean {
+    return !!(this.clientId && this.clientSecret);
   }
 
   getAuthUrl(redirectUri: string): string {
